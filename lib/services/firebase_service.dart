@@ -4,6 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../configurations/settings.dart' as configurations;
 import '../services/data_service.dart' as data_service;
 
+void retrieveAllDataFromFireStore() {
+  updateGateWaysFromFireStore();
+  updateNetworksFromFireStore();
+  updatePromosFromFireStore();
+}
+
 void updateGateWaysFromFireStore() async {
   CollectionReference ref = FirebaseFirestore.instance.collection('gateways');
   QuerySnapshot eventsQuery = await ref.get();
@@ -13,26 +19,28 @@ void updateGateWaysFromFireStore() async {
   eventsQuery.docs.forEach((document) {
     configurations.gatewayList.add(document['phone-number']);
   });
+
+  data_service.saveGateWayList(configurations.gatewayList);
 }
 
 void updateNetworksFromFireStore() async {
   CollectionReference ref = FirebaseFirestore.instance.collection('networks');
   QuerySnapshot eventsQuery = await ref.get();
 
-  List<String> networkList = [];
+  configurations.networkList.clear();
 
   eventsQuery.docs.forEach((document) {
     configurations.networkList.add(document['network']);
   });
 
-  data_service.saveNetwork(networkList);
+  data_service.saveNetwork(configurations.networkList);
 }
 
 void updatePromosFromFireStore() async {
   CollectionReference ref = FirebaseFirestore.instance.collection('promos');
   QuerySnapshot eventsQuery = await ref.get();
 
-  List<String> promoList = [];
+  configurations.promoList.clear();
 
   eventsQuery.docs.forEach((document) {
     Map<String, dynamic> user = {
@@ -42,8 +50,8 @@ void updatePromosFromFireStore() async {
       'network': document['network']
     };
 
-    promoList.add(jsonEncode(user));
+    configurations.promoList.add(jsonEncode(user));
   });
 
-  data_service.savePromos(promoList);
+  data_service.savePromos(configurations.promoList);
 }

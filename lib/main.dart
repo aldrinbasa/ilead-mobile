@@ -18,11 +18,10 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  configurations.initializeSettings();
-  data_service.getNetwork();
+  //data_service.getNetwork();
 
-  firebase_service.updateNetworksFromFireStore();
-  firebase_service.updatePromosFromFireStore();
+  firebase_service.retrieveAllDataFromFireStore();
+  configurations.initializeSettings();
 
   runApp(const MyApp());
 }

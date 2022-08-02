@@ -11,4 +11,5 @@ void initializeSettings() {
   dataService.getSavedGateWay()!;
   dataService.getNetwork()!;
   dataService.getPromos()!;
+  dataService.getGateWaylist()!;
 }

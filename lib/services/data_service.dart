@@ -4,6 +4,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
 
+// GATEWAY LIST
+Future<void> saveGateWayList(List<String> gatewayList) async {
+  final SharedPreferences sharedPreferences = await _preferences;
+
+  await sharedPreferences.setStringList("gateway-list", gatewayList);
+}
+
+getGateWaylist() async {
+  final SharedPreferences sharedPreferences = await _preferences;
+
+  final List<String>? savedGateWayList =
+      sharedPreferences.getStringList("gateway-list");
+
+  configurations.gatewayList = savedGateWayList!;
+}
+
 // SAVED GATEWAY
 Future<void> saveSavedGateWay(String phoneNumber) async {
   final SharedPreferences sharedPreferences = await _preferences;

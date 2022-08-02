@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../configurations/settings.dart' as configurations;
 import '../services/data_service.dart' as dataService;
+import '../services/firebase_service.dart' as firebas_service;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -119,8 +120,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: RaisedButton(
                       onPressed: () {
                         setState(() {
-                          _updateSettingsFromFireStore();
-                          configurations.initializeSettings();
+                          firebas_service.retrieveAllDataFromFireStore();
                         });
                       },
                       shape: RoundedRectangleBorder(
