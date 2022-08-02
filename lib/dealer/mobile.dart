@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:intl/intl.dart';
+import '../configurations/settings.dart' as configurations;
 
 class MobilePage extends StatefulWidget {
   const MobilePage({Key? key}) : super(key: key);
@@ -12,8 +13,8 @@ class MobilePage extends StatefulWidget {
 }
 
 class _MobilePageState extends State<MobilePage> {
-
   List<String> phoneNumber = [];
+  String command = "";
 
   TextEditingController phoneNumberTextController = TextEditingController();
   TextEditingController codeTextController = TextEditingController();
@@ -25,9 +26,10 @@ class _MobilePageState extends State<MobilePage> {
 
   void pickContacts() async {
     final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
-    print(contact);
     setState(() {
-      phoneNumberTextController.text = contact.phoneNumber!.number!;
+      phoneNumberTextController.text =
+          contact.phoneNumber!.number!.replaceAll(' ', '');
+      updateCommand();
     });
 
     phoneNumber.clear();
@@ -35,16 +37,31 @@ class _MobilePageState extends State<MobilePage> {
   }
 
   void sendSMSValue() async {
-    String send_result = await sendSMS(message: "test", recipients: this.phoneNumber)
-      .catchError((err) {
+    if (phoneNumberTextController.text != '' &&
+        codeTextController.text != '' &&
+        nameTextController.text != '' &&
+        birthdayTextController.text != '' &&
+        addressTextController.text != '' &&
+        usernameTextController.text != '' &&
+        passwordTextController.text != '') {
+      String send_result = await sendSMS(
+          message: command,
+          recipients: [configurations.savedGateWay]).catchError((err) {
         print(err + "ERROR");
-    });
-    print(send_result + "RESULTS");
+      });
+      print(send_result + "RESULTS");
+    } else {
+      print("MOBILE INVALID FORM");
+    }
+  }
+
+  void updateCommand() {
+    command =
+        "MOBILE ${phoneNumberTextController.text}/${codeTextController.text}/${passwordTextController.text}/${nameTextController.text}/${usernameTextController.text}/${birthdayTextController.text}/${addressTextController.text}";
   }
 
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -66,9 +83,16 @@ class _MobilePageState extends State<MobilePage> {
             Container(
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.01,),
-                  Icon(Icons.phone_iphone, size: screenWidth * 0.2,),
-                  SizedBox(height: screenHeight * 0.01,),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Icon(
+                    Icons.phone_iphone,
+                    size: screenWidth * 0.2,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
                   const Text(
                     "Mobile",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -76,10 +100,9 @@ class _MobilePageState extends State<MobilePage> {
                   Text(
                     "Activate a Mobile Stockiest",
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blueAccent[400]
-                    ),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent[400]),
                   ),
                   TextField(
                     controller: phoneNumberTextController,
@@ -89,19 +112,24 @@ class _MobilePageState extends State<MobilePage> {
                       fontSize: 22,
                     ),
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {pickContacts();},
-                        icon: const Icon(Icons.contact_phone),
-                      ),
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.phone),
-                      labelText: "Phone Number",
-                      labelStyle: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      )
-                    ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            pickContacts();
+                          },
+                          icon: const Icon(Icons.contact_phone),
+                        ),
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(Icons.phone),
+                        labelText: "Phone Number",
+                        labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900)),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
                     controller: codeTextController,
@@ -114,11 +142,15 @@ class _MobilePageState extends State<MobilePage> {
                       prefixIcon: Icon(Icons.numbers),
                       labelText: "Activation Code",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
                     controller: nameTextController,
@@ -131,45 +163,48 @@ class _MobilePageState extends State<MobilePage> {
                       prefixIcon: Icon(Icons.account_box),
                       labelText: "Name",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
-                    controller: birthdayTextController,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      prefixIcon: Icon(Icons.date_range),
-                      labelText: "Birthday",
-                      labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
+                      controller: birthdayTextController,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
                       ),
-                    ),
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now()
-                      );
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        prefixIcon: Icon(Icons.date_range),
+                        labelText: "Birthday",
+                        labelStyle: TextStyle(
+                            fontSize: 18,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900),
+                      ),
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now());
 
-                      if(pickedDate != null){
-                        String dateFormatted = DateFormat('MM-dd-yyyy').format(pickedDate);
-                        setState(() {
-                          birthdayTextController.text = dateFormatted;
-                        });
-                      }
-                    }
-                  ),
+                        if (pickedDate != null) {
+                          String dateFormatted =
+                              DateFormat('MM-dd-yyyy').format(pickedDate);
+                          setState(() {
+                            birthdayTextController.text = dateFormatted;
+                            updateCommand();
+                          });
+                        }
+                      }),
                   TextField(
                     controller: addressTextController,
                     style: const TextStyle(
@@ -181,14 +216,20 @@ class _MobilePageState extends State<MobilePage> {
                       prefixIcon: Icon(Icons.home),
                       labelText: "Address",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
-                    inputFormatters:[FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'))],
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'))
+                    ],
                     controller: usernameTextController,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
@@ -199,11 +240,15 @@ class _MobilePageState extends State<MobilePage> {
                       prefixIcon: Icon(Icons.person),
                       labelText: "Username",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
                     obscureText: true,
@@ -219,12 +264,17 @@ class _MobilePageState extends State<MobilePage> {
                       prefixIcon: Icon(Icons.password),
                       labelText: "Password",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
+                  Text(command)
                 ],
               ),
             ),

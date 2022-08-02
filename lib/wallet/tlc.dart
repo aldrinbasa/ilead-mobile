@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
+import '../configurations/settings.dart' as configurations;
 
 class TLCPage extends StatefulWidget {
   const TLCPage({Key? key}) : super(key: key);
@@ -21,19 +22,24 @@ class _TLCPageState extends State<TLCPage> {
     final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
 
     setState(() {
-      phoneNumberTextController.text = contact.phoneNumber!.number!;
+      phoneNumberTextController.text =
+          contact.phoneNumber!.number!.replaceAll(' ', '');
+      command =
+          "TLC ${phoneNumberTextController.text} ${amountTextController.text}";
     });
-
-    phoneNumber.clear();
-    phoneNumber.add(phoneNumberTextController.text.replaceAll(' ', ''));
   }
 
   void sendSMSValue() async {
-    String sendResult = await sendSMS(message: "test", recipients: phoneNumber)
-      .catchError((err) {
+    if (phoneNumberTextController.text != "" &&
+        amountTextController.text != "") {
+      String sendResult = await sendSMS(
+          message: command,
+          recipients: [configurations.savedGateWay]).catchError((err) {
         print(err);
-    });
-    print(sendResult);
+      });
+    } else {
+      print("incorrect fields");
+    }
   }
 
   @override
@@ -42,19 +48,21 @@ class _TLCPageState extends State<TLCPage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text("Send Wallet Funds"),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            sendSMSValue();
-          },
-          elevation: 10,
-          child: const Icon(Icons.send),
-        ),
-        body: Center(
-          child: ListView(padding: const EdgeInsets.all(25), children: [
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text("Send Wallet Funds"),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          sendSMSValue();
+        },
+        elevation: 10,
+        child: const Icon(Icons.send),
+      ),
+      body: Center(
+        child: ListView(
+          padding: const EdgeInsets.all(25),
+          children: [
             Column(
               children: [
                 SizedBox(height: screenHeight * 0.01),
@@ -92,6 +100,11 @@ class _TLCPageState extends State<TLCPage> {
                           fontSize: 18,
                           color: Colors.green,
                           fontWeight: FontWeight.w900)),
+                  onChanged: (text) {
+                    setState(() {
+                      command = "TLC ${text} ${amountTextController.text}";
+                    });
+                  },
                 ),
                 SizedBox(
                   height: screenHeight * 0.005,
@@ -113,9 +126,13 @@ class _TLCPageState extends State<TLCPage> {
                     labelStyle: TextStyle(
                         fontSize: 18,
                         color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                        fontWeight: FontWeight.w900),
                   ),
+                  onChanged: (text) {
+                    setState(() {
+                      command = "TLC ${phoneNumberTextController.text} ${text}";
+                    });
+                  },
                 ),
                 SizedBox(
                   height: screenHeight * 0.005,
@@ -127,12 +144,22 @@ class _TLCPageState extends State<TLCPage> {
                         onChanged: (value) {
                           setState(() {
                             repeatTransaction = value!;
+                            if (repeatTransaction) {
+                              command = "REP " + command;
+                            } else {
+                              command = command.replaceAll('REP ', '');
+                            }
                           });
                         }),
                     GestureDetector(
                       onTap: () {
                         setState(() {
                           repeatTransaction = !repeatTransaction;
+                          if (repeatTransaction) {
+                            command = "REP " + command;
+                          } else {
+                            command = command.replaceAll('REP ', '');
+                          }
                         });
                       },
                       child: Text(

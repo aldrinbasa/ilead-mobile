@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
+import '../configurations/settings.dart' as configurations;
 
 class AdditionalAccountPage extends StatefulWidget {
   const AdditionalAccountPage({Key? key}) : super(key: key);
@@ -10,22 +11,18 @@ class AdditionalAccountPage extends StatefulWidget {
 }
 
 class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
-
   List<String> phoneNumber = [];
+  String command = "";
 
   TextEditingController phoneNumberTextController = TextEditingController();
   TextEditingController codeTextController = TextEditingController();
-  TextEditingController passwordTextController = TextEditingController();
-  TextEditingController usernameTextController = TextEditingController();
-  TextEditingController nameTextController = TextEditingController();
-  TextEditingController birthdayTextController = TextEditingController();
-  TextEditingController addressTextController = TextEditingController();
 
   void pickContacts() async {
     final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
-    print(contact);
     setState(() {
-      phoneNumberTextController.text = contact.phoneNumber!.number!;
+      phoneNumberTextController.text =
+          contact.phoneNumber!.number!.replaceAll(' ', '');
+      updateCommand();
     });
 
     phoneNumber.clear();
@@ -33,16 +30,25 @@ class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
   }
 
   void sendSMSValue() async {
-    String send_result = await sendSMS(message: "test", recipients: this.phoneNumber)
-      .catchError((err) {
+    if (phoneNumberTextController.text != '' && codeTextController.text != '') {
+      String send_result = await sendSMS(
+          message: command,
+          recipients: [configurations.savedGateWay]).catchError((err) {
         print(err + "ERROR");
-    });
-    print(send_result + "RESULTS");
+      });
+      print(send_result + "RESULTS");
+    } else {
+      print("Additional Account Invalid Form");
+    }
+  }
+
+  void updateCommand() {
+    command =
+        "ADD ${codeTextController.text}/${phoneNumberTextController.text}";
   }
 
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -64,9 +70,16 @@ class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
             Container(
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.01,),
-                  Icon(Icons.add_circle, size: screenWidth * 0.2,),
-                  SizedBox(height: screenHeight * 0.01,),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Icon(
+                    Icons.add_circle,
+                    size: screenWidth * 0.2,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
                   const Text(
                     "Additional Account",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -74,10 +87,9 @@ class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
                   Text(
                     "Add Another Account to Your Name",
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blueAccent[400]
-                    ),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent[400]),
                   ),
                   TextField(
                     controller: phoneNumberTextController,
@@ -87,19 +99,24 @@ class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
                       fontSize: 22,
                     ),
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {pickContacts();},
-                        icon: const Icon(Icons.contact_phone),
-                      ),
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.phone),
-                      labelText: "Phone Number",
-                      labelStyle: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      )
-                    ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            pickContacts();
+                          },
+                          icon: const Icon(Icons.contact_phone),
+                        ),
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(Icons.phone),
+                        labelText: "Phone Number",
+                        labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900)),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   TextField(
                     controller: codeTextController,
@@ -112,12 +129,17 @@ class _AdditionalAccountPageState extends State<AdditionalAccountPage> {
                       prefixIcon: Icon(Icons.numbers),
                       labelText: "Activation Code",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
+                  Text(command)
                 ],
               ),
             ),

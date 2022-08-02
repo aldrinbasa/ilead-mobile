@@ -8,14 +8,16 @@ import './change_password.dart';
 import './reload_solutions.dart';
 
 import '../services/route_service.dart';
+import '../configurations/settings.dart' as configurations;
 
-List<String> gateWayNumber = ["09289216384"];
+List<String> gateWayNumber = [configurations.savedGateWay];
 
 RouteManager routeManager = RouteManager();
 
 Route _routeToChangePassword() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const ChangePasswordPage(),
+    pageBuilder: (context, animation, secondaryAnimation) =>
+        const ChangePasswordPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(1.0, 0.0);
       const end = Offset.zero;
@@ -32,8 +34,8 @@ Route _routeToChangePassword() {
 
 void sendBalanceRequest() async {
   String send_result = await sendSMS(message: "BAL", recipients: gateWayNumber)
-    .catchError((err) {
-      print(err);
+      .catchError((err) {
+    print(err);
   });
   print(send_result);
 }
@@ -43,17 +45,18 @@ class OthersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text("Others"),
-        ),
-        body: Center(
-          child: ListView(padding: const EdgeInsets.all(25), children: [
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text("Others"),
+      ),
+      body: Center(
+        child: ListView(
+          padding: const EdgeInsets.all(25),
+          children: [
             Column(
               children: [
                 SizedBox(height: screenHeight * 0.01),
@@ -75,16 +78,20 @@ class OthersPage extends StatelessWidget {
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Colors.blueAccent[400]
-                  ),
+                      color: Colors.blueAccent[400]),
                 ),
                 SizedBox(
                   height: screenHeight * 0.025,
                 ),
                 InkWell(
-                  onTap: () {sendBalanceRequest();},
+                  onTap: () {
+                    sendBalanceRequest();
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.wallet, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.wallet,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "WALLET BALANCE",
                       style: TextStyle(
@@ -97,9 +104,15 @@ class OthersPage extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {Navigator.of(context).push(routeManager.routeTo(() => HelpPage()));},
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(routeManager.routeTo(() => HelpPage()));
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.live_help, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.live_help,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "CUSTOMER SERVICE HELP",
                       style: TextStyle(
@@ -112,9 +125,15 @@ class OthersPage extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {Navigator.of(context).push(routeManager.routeTo(() => ChangePasswordPage()));},
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(routeManager.routeTo(() => ChangePasswordPage()));
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.password_rounded, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.password_rounded,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "CHANGE PASSWORD",
                       style: TextStyle(
@@ -127,9 +146,15 @@ class OthersPage extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {Navigator.of(context).push(routeManager.routeTo(() => const ReloadSolutionsPage()));},
+                  onTap: () {
+                    Navigator.of(context).push(routeManager
+                        .routeTo(() => const ReloadSolutionsPage()));
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.verified_user, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.verified_user,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "RELOAD SOLUTIONS",
                       style: TextStyle(
@@ -144,7 +169,10 @@ class OthersPage extends StatelessWidget {
                 InkWell(
                   onTap: () {},
                   child: const ListTile(
-                    leading: Icon(Icons.checklist, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.checklist,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "RETAILER-RETAILER ACTIVATION",
                       style: TextStyle(

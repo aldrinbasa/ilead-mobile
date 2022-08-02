@@ -1,6 +1,6 @@
 name: ilead_mobile
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
@@ -17,6 +17,8 @@ dependencies:
   url_launcher: ^6.1.2
   flutter_sms: ^2.3.3
   intl: ^0.17.0
+  cloud_firestore: ^3.4.1
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:
@@ -25,7 +27,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
 
 flutter:
-
   uses-material-design: true
   assets:
     - assets/images/

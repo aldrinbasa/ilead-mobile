@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "201649889740",
+    "project_id": "ilead-mobile",
+    "storage_bucket": "ilead-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201649889740:android:21b0321e8385e62f49fd69",
+        "android_client_info": {
+          "package_name": "com.example.ilead_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201649889740-tnlo7ouiaumis2qc0tieerm3oo4t7l9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiMfj6W70sTxJwFZSP6Dscp2Fgqp-g_-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201649889740-tnlo7ouiaumis2qc0tieerm3oo4t7l9t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

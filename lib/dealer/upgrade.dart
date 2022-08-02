@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
+import '../configurations/settings.dart' as configurations;
 
 final List<String> networkList = [
   "Distributor",
@@ -18,23 +19,20 @@ class UpgradePage extends StatefulWidget {
 }
 
 class _UpgradePageState extends State<UpgradePage> {
-
   List<String> phoneNumber = [];
-  String selectedNetwork = "";
+  String command = "";
+  String selectedLevel = "";
 
   TextEditingController phoneNumberTextController = TextEditingController();
   TextEditingController codeTextController = TextEditingController();
-  TextEditingController passwordTextController = TextEditingController();
-  TextEditingController usernameTextController = TextEditingController();
-  TextEditingController nameTextController = TextEditingController();
-  TextEditingController birthdayTextController = TextEditingController();
-  TextEditingController addressTextController = TextEditingController();
 
   void pickContacts() async {
     final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
     print(contact);
     setState(() {
-      phoneNumberTextController.text = contact.phoneNumber!.number!;
+      phoneNumberTextController.text =
+          contact.phoneNumber!.number!.replaceAll(' ', '');
+      updateCommand();
     });
 
     phoneNumber.clear();
@@ -42,16 +40,25 @@ class _UpgradePageState extends State<UpgradePage> {
   }
 
   void sendSMSValue() async {
-    String send_result = await sendSMS(message: "test", recipients: this.phoneNumber)
-      .catchError((err) {
+    if (phoneNumberTextController.text != '' &&
+        selectedLevel != '' &&
+        codeTextController.text != '') {
+      String send_result = await sendSMS(
+          message: command,
+          recipients: [configurations.savedGateWay]).catchError((err) {
         print(err + "ERROR");
-    });
-    print(send_result + "RESULTS");
+      });
+      print(send_result + "RESULTS");
+    }
+  }
+
+  void updateCommand() {
+    command =
+        "UP${selectedLevel} ${codeTextController.text}/${phoneNumberTextController.text}";
   }
 
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -73,9 +80,16 @@ class _UpgradePageState extends State<UpgradePage> {
             Container(
               child: Column(
                 children: [
-                  SizedBox(height: screenHeight * 0.01,),
-                  Icon(Icons.upgrade, size: screenWidth * 0.2,),
-                  SizedBox(height: screenHeight * 0.01,),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
+                  Icon(
+                    Icons.upgrade,
+                    size: screenWidth * 0.2,
+                  ),
+                  SizedBox(
+                    height: screenHeight * 0.01,
+                  ),
                   const Text(
                     "Upgrade Account",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -83,10 +97,9 @@ class _UpgradePageState extends State<UpgradePage> {
                   Text(
                     "Level-up Your Account Status",
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.blueAccent[400]
-                    ),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.blueAccent[400]),
                   ),
                   TextField(
                     controller: phoneNumberTextController,
@@ -96,33 +109,40 @@ class _UpgradePageState extends State<UpgradePage> {
                       fontSize: 22,
                     ),
                     decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                        onPressed: () {pickContacts();},
-                        icon: const Icon(Icons.contact_phone),
-                      ),
-                      border: InputBorder.none,
-                      prefixIcon: const Icon(Icons.phone),
-                      labelText: "Phone Number",
-                      labelStyle: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      )
-                    ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            pickContacts();
+                          },
+                          icon: const Icon(Icons.contact_phone),
+                        ),
+                        border: InputBorder.none,
+                        prefixIcon: const Icon(Icons.phone),
+                        labelText: "Phone Number",
+                        labelStyle: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.green,
+                            fontWeight: FontWeight.w900)),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
                   DropdownButtonFormField(
                     style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      color: Colors.black),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: Colors.black),
                     // value: selectedNetwork,
                     items: networkList.map((itemone) {
                       return DropdownMenuItem(
-                        value: itemone, child: Text(itemone));
+                          value: itemone.split(" ")[0].toUpperCase(),
+                          child: Text(itemone));
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        selectedNetwork = value.toString();
+                        selectedLevel = value.toString();
+                        updateCommand();
                       });
                     },
                     decoration: const InputDecoration(
@@ -130,10 +150,9 @@ class _UpgradePageState extends State<UpgradePage> {
                       prefixIcon: Icon(Icons.corporate_fare),
                       labelText: "Level",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
                   ),
                   TextField(
@@ -147,12 +166,17 @@ class _UpgradePageState extends State<UpgradePage> {
                       prefixIcon: Icon(Icons.numbers),
                       labelText: "Activation Code",
                       labelStyle: TextStyle(
-                        fontSize: 18,
-                        color: Colors.green,
-                        fontWeight: FontWeight.w900
-                      ),
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900),
                     ),
+                    onChanged: (text) {
+                      setState(() {
+                        updateCommand();
+                      });
+                    },
                   ),
+                  Text(command)
                 ],
               ),
             ),

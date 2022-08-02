@@ -1,19 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:invert_colors/invert_colors.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
+import '../configurations/settings.dart' as configurations;
+
 const String contentDummy =
     "Unlimited texts to all networks + 1GB data + 1GB/day of Video Every Day for Youtube, iWant TFC, NBA, Cignal Play. Validity: 3 Days";
-
-final List<String> networkList = [
-  "Smart",
-  "Globe",
-  "Sun Cellular",
-  "Talk and Text",
-  "Touch Mobile",
-  "Dito",
-];
 
 final List<String> globeLoadList = [
   "₱10",
@@ -53,27 +48,34 @@ class LoadingPage extends StatefulWidget {
 
 class _LoadingPageState extends State<LoadingPage> {
   String selectedNetwork = "Choose Network";
+  String selectedPromo = "CL";
   bool repeatTransaction = false;
 
   TextEditingController phoneNumberTextController = TextEditingController();
+  TextEditingController descriptionTextController = TextEditingController();
+  TextEditingController commandTextController = TextEditingController();
   List<String> phoneNumber = [];
-
 
   void pickContacts() async {
     final PhoneContact contact = await FlutterContactPicker.pickPhoneContact();
-    print(contact);
+
     setState(() {
-      this.phoneNumberTextController.text = contact.phoneNumber!.number!;
+      this.phoneNumberTextController.text =
+          contact.phoneNumber!.number!.replaceAll(' ', '');
     });
 
     this.phoneNumber.clear();
-    this.phoneNumber.add(this.phoneNumberTextController.text.replaceAll(' ', ''));
+    this
+        .phoneNumber
+        .add(this.phoneNumberTextController.text.replaceAll(' ', ''));
   }
 
-  void sendSMSValue() async {
-    String send_result = await sendSMS(message: "test", recipients: this.phoneNumber)
-      .catchError((err) {
-        print(err + "ERROR");
+  void sendSMSValue(String command) async {
+    String send_result = await sendSMS(
+            message: command,
+            recipients: [configurations.savedGateWay.replaceAll(' ', '')])
+        .catchError((err) {
+      print(err + "ERROR");
     });
     print(send_result + "RESULTS");
   }
@@ -90,179 +92,199 @@ class _LoadingPageState extends State<LoadingPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            sendSMSValue();
+            if (phoneNumberTextController.text != "" &&
+                commandTextController.text != "") {
+              if (repeatTransaction) {
+                sendSMSValue(
+                    "REP ${phoneNumberTextController.text} ${commandTextController.text}");
+              } else {
+                sendSMSValue(
+                    "${phoneNumberTextController.text} ${commandTextController.text}");
+              }
+            }
           },
           elevation: 10,
           child: const Icon(Icons.send),
         ),
         body: Center(
-          child: ListView(padding: const EdgeInsets.all(25), children: [
-            Container(
-              child: Column(
-                children: [
-                  SizedBox(height: screenHeight * 0.01),
-                  InvertColors(
-                    child: Image.asset(
-                      'assets/images/load.png',
-                      width: screenWidth * 0.2,
-                    ),
+            child: ListView(padding: const EdgeInsets.all(25), children: [
+          Container(
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.01),
+                InvertColors(
+                  child: Image.asset(
+                    'assets/images/load.png',
+                    width: screenWidth * 0.2,
                   ),
-                  SizedBox(
-                    height: screenHeight * 0.01,
+                ),
+                SizedBox(
+                  height: screenHeight * 0.01,
+                ),
+                const Text(
+                  "ILead Loading",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Universal E-Loading",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.blueAccent[400]),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.025,
+                ),
+                TextField(
+                  controller: phoneNumberTextController,
+                  keyboardType: const TextInputType.numberWithOptions(),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
                   ),
-                  const Text(
-                    "ILead Loading",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Universal E-Loading",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.blueAccent[400]),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.025,
-                  ),
-                  TextField(
-                    controller: phoneNumberTextController,
-                    keyboardType: const TextInputType.numberWithOptions(),
-                    style: const TextStyle(
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            pickContacts();
+                          },
+                          icon: const Icon(Icons.contact_phone)),
+                      border: InputBorder.none,
+                      prefixIcon: const Icon(Icons.phone),
+                      labelText: "Phone Number",
+                      labelStyle: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900)),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.005,
+                ),
+                DropdownButtonFormField(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 22,
-                    ),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              pickContacts();
-                            },
-                            icon: const Icon(Icons.contact_phone)),
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.phone),
-                        labelText: "Phone Number",
-                        labelStyle: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w900)),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.005,
-                  ),
-                  DropdownButtonFormField(
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        color: Colors.black),
-                    // value: selectedNetwork,
-                    items: networkList.map((itemone) {
-                      return DropdownMenuItem(
-                          value: itemone, child: Text(itemone));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedNetwork = value.toString();
+                      color: Colors.black),
+                  //value: selectedNetwork,
+                  items: configurations.networkList.map((itemone) {
+                    return DropdownMenuItem(
+                        value: itemone, child: Text(itemone));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedNetwork = value.toString();
+                      selectedPromo = "CL";
+                    });
+                  },
+                  decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.signal_cellular_alt),
+                      labelText: "Network",
+                      labelStyle: TextStyle(
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900)),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.005,
+                ),
+                DropdownButtonFormField(
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      color: Colors.black),
+                  value: selectedPromo,
+                  items: configurations.promoList
+                      .where((item) =>
+                          jsonDecode(item)['network'] == selectedNetwork)
+                      .map((itemone) {
+                    var document = jsonDecode(itemone);
+                    return DropdownMenuItem(
+                        value: document['command'],
+                        child: Text(document['name']));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      commandTextController.text = value.toString();
+                      configurations.promoList.forEach((promo) {
+                        var promoObject = jsonDecode(promo);
+                        if (value.toString() == promoObject['command']) {
+                          descriptionTextController.text =
+                              promoObject['description'];
+                        }
                       });
-                    },
-                    decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.signal_cellular_alt),
-                        labelText: "Network",
-                        labelStyle: TextStyle(
-                            fontSize: 18,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w900)),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.005,
-                  ),
-                  DropdownButtonFormField(
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        color: Colors.black),
-                    // value: selectedNetwork,
-                    items: smartLoadList.map((itemone) {
-                      return DropdownMenuItem(
-                          value: itemone, child: Text(itemone));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedNetwork = value.toString();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        prefixIcon: ImageIcon(
-                          AssetImage("assets/images/peso.png"),
-                          color: Colors.grey,
-                        ),
-                        labelText: "Select Load",
-                        labelStyle: TextStyle(
-                            fontSize: 18,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w900)),
-                  ),
-                  SizedBox(
-                    height: screenHeight * 0.005,
-                  ),
-                  Row(
-                    children: [
-                      Checkbox(
-                          value: repeatTransaction,
-                          onChanged: (value) {
-                            setState(() {
-                              repeatTransaction = value!;
-                            });
-                          }),
-                      GestureDetector(
-                        onTap: () {
+                      selectedPromo = value.toString();
+                    });
+                  },
+                  decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: ImageIcon(
+                        AssetImage("assets/images/peso.png"),
+                        color: Colors.grey,
+                      ),
+                      labelText: "Select Load",
+                      labelStyle: TextStyle(
+                          fontSize: 18,
+                          color: Colors.green,
+                          fontWeight: FontWeight.w900)),
+                ),
+                SizedBox(
+                  height: screenHeight * 0.005,
+                ),
+                Row(
+                  children: [
+                    Checkbox(
+                        value: repeatTransaction,
+                        onChanged: (value) {
                           setState(() {
-                            repeatTransaction = !repeatTransaction;
+                            repeatTransaction = value!;
                           });
-                        },
-                        child: Text(
-                          "Repeat Transaction",
-                          style: TextStyle(
+                        }),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          repeatTransaction = !repeatTransaction;
+                        });
+                      },
+                      child: Text(
+                        "Repeat Transaction",
+                        style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                             color: Colors.blueAccent[400]),
+                      ),
+                    ),
+                  ],
+                ),
+                Card(
+                  elevation: 1,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: screenWidth * 0.8,
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.black.withOpacity(0.1)))),
+                        child: Text(
+                          commandTextController.text,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      Container(
+                        width: screenWidth * 0.8,
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          descriptionTextController.text,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ],
                   ),
-                  Card(
-                    elevation: 1,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: screenWidth * 0.8,
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          decoration: BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.black.withOpacity(0.1)))),
-                          child: Text(
-                            repeatTransaction.toString(),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Container(
-                          width: screenWidth * 0.8,
-                          padding: const EdgeInsets.all(10),
-                          child: const Text(
-                            contentDummy,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
             ),
-          ]
-        )
-      )
-    );
+          ),
+        ])));
   }
 }
