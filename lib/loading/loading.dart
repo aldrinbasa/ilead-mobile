@@ -1,43 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:invert_colors/invert_colors.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 
 import '../configurations/settings.dart' as configurations;
-
-const String contentDummy =
-    "Unlimited texts to all networks + 1GB data + 1GB/day of Video Every Day for Youtube, iWant TFC, NBA, Cignal Play. Validity: 3 Days";
-
-final List<String> globeLoadList = [
-  "₱10",
-  "₱20",
-  "₱50",
-  "₱100",
-  "₱500",
-  "₱1000",
-  "GoSURF 50",
-  "GoSAKTO 100",
-];
-
-final List<String> smartLoadList = [
-  "₱10",
-  "₱20",
-  "₱50",
-  "₱100",
-  "₱500",
-  "₱1000",
-  "All Text 10",
-  "All Text 20",
-  "All Text 30",
-  "All Text 50",
-  "AllData 50",
-  "AllData 100",
-  "AllData 200",
-  "BRO Giga 499",
-  "BRO Giga 999",
-];
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
@@ -50,10 +19,13 @@ class _LoadingPageState extends State<LoadingPage> {
   String selectedNetwork = "Choose Network";
   String selectedPromo = "CL";
   bool repeatTransaction = false;
+  bool login = false;
 
   TextEditingController phoneNumberTextController = TextEditingController();
   TextEditingController descriptionTextController = TextEditingController();
   TextEditingController commandTextController = TextEditingController();
+  TextEditingController usernameTextController = TextEditingController();
+  TextEditingController passwordTextController = TextEditingController();
   List<String> phoneNumber = [];
 
   void pickContacts() async {
@@ -95,11 +67,21 @@ class _LoadingPageState extends State<LoadingPage> {
             if (phoneNumberTextController.text != "" &&
                 commandTextController.text != "") {
               if (repeatTransaction) {
-                sendSMSValue(
-                    "REP ${phoneNumberTextController.text} ${commandTextController.text}");
+                if (login) {
+                  sendSMSValue(
+                      "LOGIN REP ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                } else {
+                  sendSMSValue(
+                      "REP ${phoneNumberTextController.text} ${commandTextController.text}");
+                }
               } else {
-                sendSMSValue(
-                    "${phoneNumberTextController.text} ${commandTextController.text}");
+                if (login) {
+                  sendSMSValue(
+                      "LOGIN ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                } else {
+                  sendSMSValue(
+                      "${phoneNumberTextController.text} ${commandTextController.text}");
+                }
               }
             }
           },
@@ -255,6 +237,73 @@ class _LoadingPageState extends State<LoadingPage> {
                     ),
                   ],
                 ),
+                Row(
+                  children: [
+                    Switch(
+                        value: login,
+                        onChanged: (value) {
+                          setState(() {
+                            login = value;
+                          });
+                        }),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          login = !login;
+                        });
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blueAccent[400]),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                    child: login
+                        ? TextField(
+                            controller: usernameTextController,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                            decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.account_circle_outlined),
+                                labelText: "Username",
+                                labelStyle: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w900)),
+                            onChanged: (text) {
+                              setState(() {});
+                            },
+                          )
+                        : null),
+                Container(
+                    child: login
+                        ? TextField(
+                            maxLength: 6,
+                            controller: passwordTextController,
+                            keyboardType: TextInputType.number,
+                            obscureText: true,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                            decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                prefixIcon: Icon(Icons.password),
+                                labelText: "Password",
+                                labelStyle: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w900)),
+                          )
+                        : null),
                 Card(
                   elevation: 1,
                   child: Column(
