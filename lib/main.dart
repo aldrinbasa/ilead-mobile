@@ -18,18 +18,11 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  //data_service.getNetwork();
-
   firebase_service.retrieveAllDataFromFireStore();
   configurations.initializeSettings();
 
   runApp(const MyApp());
 }
-
-// Stream<List<String>> readGateways() => FirebaseFirestore.instance
-//     .collection('gateways')
-//     .snapshots()
-//     .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
 getGateWays() async {
   final CollectionReference _gateways =

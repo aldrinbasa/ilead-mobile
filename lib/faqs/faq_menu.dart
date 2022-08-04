@@ -1,49 +1,16 @@
 import 'package:flutter/material.dart';
 
-import 'package:invert_colors/invert_colors.dart';
-import 'package:flutter_sms/flutter_sms.dart';
-
-import './help.dart';
-import './change_password.dart';
-import './reload_solutions.dart';
-import '../dealer/retailer.dart';
-
+import './different_number.dart';
 import '../services/route_service.dart';
-import '../configurations/settings.dart' as configurations;
-
-List<String> gateWayNumber = [configurations.savedGateWay];
+import './no_response.dart';
+import './invalid_command.dart';
+import './no_confirmation.dart';
+import './help.dart';
 
 RouteManager routeManager = RouteManager();
 
-Route _routeToChangePassword() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        const ChangePasswordPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
-
-void sendBalanceRequest() async {
-  String send_result =
-      await sendSMS(message: "BAL", recipients: [configurations.savedGateWay])
-          .catchError((err) {
-    print(err);
-  });
-  print(send_result);
-}
-
-class OthersPage extends StatelessWidget {
-  const OthersPage({Key? key}) : super(key: key);
+class FAQPage extends StatelessWidget {
+  const FAQPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +20,7 @@ class OthersPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        title: const Text("Others"),
+        title: const Text("ILead Wallet"),
       ),
       body: Center(
         child: ListView(
@@ -61,22 +28,15 @@ class OthersPage extends StatelessWidget {
           children: [
             Column(
               children: [
-                SizedBox(height: screenHeight * 0.01),
-                InvertColors(
-                  child: Image.asset(
-                    'assets/images/others.png',
-                    width: screenWidth * 0.2,
-                  ),
-                ),
                 SizedBox(
                   height: screenHeight * 0.01,
                 ),
                 const Text(
-                  "Other Services",
+                  "F.A.Q.S",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "Balance, Help, and Other Services",
+                  "Frequently Asked Questions",
                   style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -87,36 +47,16 @@ class OthersPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    sendBalanceRequest();
-                  },
-                  child: const ListTile(
-                    leading: Icon(
-                      Icons.wallet,
-                      color: Colors.blueAccent,
-                    ),
-                    title: Text(
-                      "WALLET BALANCE",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
-                    ),
-                    trailing: Icon(Icons.send),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
                     Navigator.of(context)
-                        .push(routeManager.routeTo(() => HelpPage()));
+                        .push(routeManager.routeTo(() => DifferentNumber()));
                   },
                   child: const ListTile(
                     leading: Icon(
-                      Icons.live_help,
+                      Icons.question_mark_sharp,
                       color: Colors.blueAccent,
                     ),
                     title: Text(
-                      "CUSTOMER SERVICE HELP",
+                      "WHEN LOADING USING DIFFERENT NUMBER",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -129,36 +69,15 @@ class OthersPage extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Navigator.of(context)
-                        .push(routeManager.routeTo(() => ChangePasswordPage()));
+                        .push(routeManager.routeTo(() => NoResponse()));
                   },
                   child: const ListTile(
                     leading: Icon(
-                      Icons.password_rounded,
+                      Icons.question_mark_sharp,
                       color: Colors.blueAccent,
                     ),
                     title: Text(
-                      "CHANGE PASSWORD",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black,
-                      ),
-                    ),
-                    trailing: Icon(Icons.arrow_forward),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(routeManager
-                        .routeTo(() => const ReloadSolutionsPage()));
-                  },
-                  child: const ListTile(
-                    leading: Icon(
-                      Icons.verified_user,
-                      color: Colors.blueAccent,
-                    ),
-                    title: Text(
-                      "RELOAD SOLUTIONS",
+                      "IF NO RESPONSE",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -171,15 +90,57 @@ class OthersPage extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Navigator.of(context)
-                        .push(routeManager.routeTo(() => const RetailerPage()));
+                        .push(routeManager.routeTo(() => InvalidCommand()));
                   },
                   child: const ListTile(
                     leading: Icon(
-                      Icons.checklist,
+                      Icons.question_mark_sharp,
                       color: Colors.blueAccent,
                     ),
                     title: Text(
-                      "RETAILER-RETAILER ACTIVATION",
+                      "INVALID COMMAND",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(routeManager.routeTo(() => NoConfirmation()));
+                  },
+                  child: const ListTile(
+                    leading: Icon(
+                      Icons.question_mark_sharp,
+                      color: Colors.blueAccent,
+                    ),
+                    title: Text(
+                      "NO CONFIRMATION",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black,
+                      ),
+                    ),
+                    trailing: Icon(Icons.arrow_forward),
+                  ),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(routeManager.routeTo(() => Help()));
+                  },
+                  child: const ListTile(
+                    leading: Icon(
+                      Icons.question_mark_sharp,
+                      color: Colors.blueAccent,
+                    ),
+                    title: Text(
+                      "HELP",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,

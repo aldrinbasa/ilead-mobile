@@ -96,6 +96,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   height: screenHeight * 0.005,
                 ),
                 TextField(
+                  obscureText: true,
                   keyboardType: const TextInputType.numberWithOptions(),
                   maxLength: 6,
                   controller: oldPasswordTextController,
@@ -121,6 +122,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                   height: screenHeight * 0.005,
                 ),
                 TextField(
+                  obscureText: true,
                   keyboardType: const TextInputType.numberWithOptions(),
                   maxLength: 6,
                   controller: newPasswordTextController,

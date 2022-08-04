@@ -147,6 +147,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
                   ),
+                  SizedBox(
+                    height: screenHeight * 0.03,
+                  ),
+                  const Text(
+                    "This App can be used without internet connection. Choose the Gateway that has the strongest signal in your location. You can send to any gateway regardless of your costumer network. Due to sending to Gateway requires personal sim load, its highly advisable that you are always registered to load promos. Load Wallet and Personal Load are 2 different Accounts.",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.justify,
+                  ),
                 ],
               ),
             ),

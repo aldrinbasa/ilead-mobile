@@ -7,7 +7,7 @@ import '../wallet/wallet.dart';
 import '../others/others.dart';
 import '../dealer/dealer_menu.dart';
 import '../settings/settings.dart';
-import '../wallet/faqs/menu.dart';
+import '../faqs/faq_menu.dart';
 
 import '../services/route_service.dart';
 
