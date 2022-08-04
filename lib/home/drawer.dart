@@ -1,59 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:ilead_mobile/dealer/dealer_menu.dart';
 import 'package:invert_colors/invert_colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../loading/loading.dart';
 import '../wallet/wallet.dart';
 import '../others/others.dart';
+import '../dealer/dealer.dart';
 
-Route _routeToLoading() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const LoadingPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
+import '../services/route_service.dart';
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
+RouteManager routeManager = RouteManager();
 
-Route _routeToWallet() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const WalletPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
+_launchUrl() async {
+  final Uri _url = Uri.parse("http://dealer.rwayent.com/");
 
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
-}
-
-Route _routeToOthers() {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => const OthersPage(),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
-      const end = Offset.zero;
-      const curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  );
+  if (await canLaunchUrl(_url)) {
+    await launchUrl(_url);
+  } else {
+    throw "Could not launch $_url";
+  }
 }
 
 class MenuDrawer extends StatelessWidget {
@@ -63,7 +29,7 @@ class MenuDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: EdgeInsets.zero,
-      children: <Widget> [
+      children: <Widget>[
         const DrawerHeader(
           decoration: BoxDecoration(
             color: Colors.blue,
@@ -77,7 +43,10 @@ class MenuDrawer extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () {Navigator.of(context).push(_routeToLoading());},
+          onTap: () {
+            Navigator.of(context)
+                .push(routeManager.routeTo(() => LoadingPage()));
+          },
           child: ListTile(
             leading: InvertColors(
               child: Image.asset(
@@ -90,7 +59,10 @@ class MenuDrawer extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () {Navigator.of(context).push(_routeToWallet());},
+          onTap: () {
+            Navigator.of(context)
+                .push(routeManager.routeTo(() => WalletPage()));
+          },
           child: ListTile(
             leading: InvertColors(
               child: Image.asset(
@@ -103,7 +75,10 @@ class MenuDrawer extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () {Navigator.of(context).push(_routeToOthers());},
+          onTap: () {
+            Navigator.of(context)
+                .push(routeManager.routeTo(() => OthersPage()));
+          },
           child: ListTile(
             leading: InvertColors(
               child: Image.asset(
@@ -116,7 +91,10 @@ class MenuDrawer extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () => print("Dealer was tapped"),
+          onTap: () {
+            Navigator.of(context)
+                .push(routeManager.routeTo(() => DealerPage()));
+          },
           child: ListTile(
             leading: InvertColors(
               child: Image.asset(
@@ -129,33 +107,9 @@ class MenuDrawer extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () => print("Bills was tapped"),
-          child: ListTile(
-            leading: InvertColors(
-              child: Image.asset(
-                "assets/images/bills.png",
-                width: 25,
-                height: 25,
-              ),
-            ),
-            title: const Text('Bills and Payment'),
-          ),
-        ),
-        InkWell(
-          onTap: () => print("Remittance was tapped"),
-          child: ListTile(
-            leading: InvertColors(
-              child: Image.asset(
-                "assets/images/remittance.png",
-                width: 25,
-                height: 25,
-              ),
-            ),
-            title: const Text('Remittance'),
-          ),
-        ),
-        InkWell(
-          onTap: () => print("Organization was tapped"),
+          onTap: () {
+            _launchUrl();
+          },
           child: ListTile(
             leading: InvertColors(
               child: Image.asset(
@@ -167,32 +121,58 @@ class MenuDrawer extends StatelessWidget {
             title: const Text('Organization'),
           ),
         ),
-        InkWell(
-          onTap: () => print("Richway Mall was tapped"),
-          child: ListTile(
-            leading: InvertColors(
-              child: Image.asset(
-                "assets/images/market.png",
-                width: 25,
-                height: 25,
-              ),
-            ),
-            title: const Text('Richway Mall'),
-          ),
-        ),
-        InkWell(
-          onTap: () => print("Richway Wallet was tapped"),
-          child: ListTile(
-            leading: InvertColors(
-              child: Image.asset(
-                "assets/images/peso.png",
-                width: 25,
-                height: 25,
-              ),
-            ),
-            title: const Text('Richway Wallet'),
-          ),
-        ),
+        // InkWell(
+        //   onTap: () => print("Bills was tapped"),
+        //   child: ListTile(
+        //     leading: InvertColors(
+        //       child: Image.asset(
+        //         "assets/images/bills.png",
+        //         width: 25,
+        //         height: 25,
+        //       ),
+        //     ),
+        //     title: const Text('Bills and Payment'),
+        //   ),
+        // ),
+        // InkWell(
+        //   onTap: () => print("Remittance was tapped"),
+        //   child: ListTile(
+        //     leading: InvertColors(
+        //       child: Image.asset(
+        //         "assets/images/remittance.png",
+        //         width: 25,
+        //         height: 25,
+        //       ),
+        //     ),
+        //     title: const Text('Remittance'),
+        //   ),
+        // ),
+        // InkWell(
+        //   onTap: () => print("Richway Mall was tapped"),
+        //   child: ListTile(
+        //     leading: InvertColors(
+        //       child: Image.asset(
+        //         "assets/images/market.png",
+        //         width: 25,
+        //         height: 25,
+        //       ),
+        //     ),
+        //     title: const Text('Richway Mall'),
+        //   ),
+        // ),
+        // InkWell(
+        //   onTap: () => print("Richway Wallet was tapped"),
+        //   child: ListTile(
+        //     leading: InvertColors(
+        //       child: Image.asset(
+        //         "assets/images/peso.png",
+        //         width: 25,
+        //         height: 25,
+        //       ),
+        //     ),
+        //     title: const Text('Richway Wallet'),
+        //   ),
+        // ),
       ],
     );
   }
