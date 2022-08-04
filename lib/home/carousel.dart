@@ -10,18 +10,18 @@ final themeMode = ValueNotifier(2);
 
 final List<Widget> imageSliders = imgList
     .map((item) => Container(
-      child: Container(
-        margin: EdgeInsets.all(5.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          child: Image.asset(
-            item,
-            fit: BoxFit.cover,
-            width: 1000.0,
+          child: Container(
+            margin: EdgeInsets.all(0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              child: Image.asset(
+                item,
+                fit: BoxFit.cover,
+                width: 1000.0,
+              ),
+            ),
           ),
-        ),
-      ),
-    ))
+        ))
     .toList();
 
 class ComplicatedImageDemo extends StatelessWidget {

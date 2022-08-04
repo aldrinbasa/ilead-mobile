@@ -204,6 +204,7 @@ class _RetailerPageState extends State<RetailerPage> {
                     },
                   ),
                   TextField(
+                    maxLength: 8,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp('[a-zA-Z0-9]'))
                     ],
@@ -229,7 +230,7 @@ class _RetailerPageState extends State<RetailerPage> {
                   ),
                   TextField(
                     obscureText: true,
-                    maxLength: 6,
+                    maxLength: 5,
                     controller: passwordTextController,
                     keyboardType: const TextInputType.numberWithOptions(),
                     style: const TextStyle(

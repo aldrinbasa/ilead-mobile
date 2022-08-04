@@ -47,7 +47,7 @@ class _LoadingPageState extends State<LoadingPage> {
             message: command,
             recipients: [configurations.savedGateWay.replaceAll(' ', '')])
         .catchError((err) {
-      print(err + "ERROR");
+      print(err);
     });
     print(send_result + "RESULTS");
   }
@@ -68,19 +68,39 @@ class _LoadingPageState extends State<LoadingPage> {
                 commandTextController.text != "") {
               if (repeatTransaction) {
                 if (login) {
-                  sendSMSValue(
-                      "LOGIN REP ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  if (selectedNetwork == "Cignal") {
+                    sendSMSValue(
+                        "LOGIN REP CIGNAL ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  } else {
+                    sendSMSValue(
+                        "LOGIN REP ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  }
                 } else {
-                  sendSMSValue(
-                      "REP ${phoneNumberTextController.text} ${commandTextController.text}");
+                  if (selectedNetwork == "Cignal") {
+                    sendSMSValue(
+                        "REP CIGNAL ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  } else {
+                    sendSMSValue(
+                        "REP ${phoneNumberTextController.text} ${commandTextController.text}");
+                  }
                 }
               } else {
                 if (login) {
-                  sendSMSValue(
-                      "LOGIN ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  if (selectedNetwork == "Cignal") {
+                    sendSMSValue(
+                        "LOGIN CIGNAL ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  } else {
+                    sendSMSValue(
+                        "LOGIN ${phoneNumberTextController.text} ${commandTextController.text} ${usernameTextController.text} ${passwordTextController.text}");
+                  }
                 } else {
-                  sendSMSValue(
-                      "${phoneNumberTextController.text} ${commandTextController.text}");
+                  if (selectedNetwork == "Cignal") {
+                    sendSMSValue(
+                        "CIGNAL ${phoneNumberTextController.text} ${commandTextController.text}");
+                  } else {
+                    sendSMSValue(
+                        "${phoneNumberTextController.text} ${commandTextController.text}");
+                  }
                 }
               }
             }
@@ -104,7 +124,7 @@ class _LoadingPageState extends State<LoadingPage> {
                   height: screenHeight * 0.01,
                 ),
                 const Text(
-                  "ILead Loading",
+                  "Richway Loading",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -286,7 +306,7 @@ class _LoadingPageState extends State<LoadingPage> {
                 Container(
                     child: login
                         ? TextField(
-                            maxLength: 6,
+                            maxLength: 5,
                             controller: passwordTextController,
                             keyboardType: TextInputType.number,
                             obscureText: true,

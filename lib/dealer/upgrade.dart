@@ -40,9 +40,7 @@ class _UpgradePageState extends State<UpgradePage> {
   }
 
   void sendSMSValue() async {
-    if (phoneNumberTextController.text != '' &&
-        selectedLevel != '' &&
-        codeTextController.text != '') {
+    if (selectedLevel != '' && codeTextController.text != '') {
       String send_result = await sendSMS(
           message: command,
           recipients: [configurations.savedGateWay]).catchError((err) {
@@ -53,8 +51,7 @@ class _UpgradePageState extends State<UpgradePage> {
   }
 
   void updateCommand() {
-    command =
-        "UP${selectedLevel} ${codeTextController.text}/${phoneNumberTextController.text}";
+    command = "UP${selectedLevel} ${codeTextController.text}";
   }
 
   @override
@@ -101,33 +98,33 @@ class _UpgradePageState extends State<UpgradePage> {
                         fontWeight: FontWeight.w500,
                         color: Colors.blueAccent[400]),
                   ),
-                  TextField(
-                    controller: phoneNumberTextController,
-                    keyboardType: const TextInputType.numberWithOptions(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                    ),
-                    decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            pickContacts();
-                          },
-                          icon: const Icon(Icons.contact_phone),
-                        ),
-                        border: InputBorder.none,
-                        prefixIcon: const Icon(Icons.phone),
-                        labelText: "Phone Number",
-                        labelStyle: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.green,
-                            fontWeight: FontWeight.w900)),
-                    onChanged: (text) {
-                      setState(() {
-                        updateCommand();
-                      });
-                    },
-                  ),
+                  // TextField(
+                  //   controller: phoneNumberTextController,
+                  //   keyboardType: const TextInputType.numberWithOptions(),
+                  //   style: const TextStyle(
+                  //     fontWeight: FontWeight.bold,
+                  //     fontSize: 22,
+                  //   ),
+                  //   decoration: InputDecoration(
+                  //       suffixIcon: IconButton(
+                  //         onPressed: () {
+                  //           pickContacts();
+                  //         },
+                  //         icon: const Icon(Icons.contact_phone),
+                  //       ),
+                  //       border: InputBorder.none,
+                  //       prefixIcon: const Icon(Icons.phone),
+                  //       labelText: "Phone Number",
+                  //       labelStyle: const TextStyle(
+                  //           fontSize: 18,
+                  //           color: Colors.green,
+                  //           fontWeight: FontWeight.w900)),
+                  //   onChanged: (text) {
+                  //     setState(() {
+                  //       updateCommand();
+                  //     });
+                  //   },
+                  // ),
                   DropdownButtonFormField(
                     style: const TextStyle(
                         fontWeight: FontWeight.bold,

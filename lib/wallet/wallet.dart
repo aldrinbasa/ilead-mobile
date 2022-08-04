@@ -77,12 +77,14 @@ class _WalletPageState extends State<WalletPage> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: const Text("Wallet"),
-        ),
-        body: Center(
-          child: ListView(padding: const EdgeInsets.all(25), children: [
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: const Text("Wallet"),
+      ),
+      body: Center(
+        child: ListView(
+          padding: const EdgeInsets.all(25),
+          children: [
             Column(
               children: [
                 SizedBox(height: screenHeight * 0.01),
@@ -96,7 +98,7 @@ class _WalletPageState extends State<WalletPage> {
                   height: screenHeight * 0.01,
                 ),
                 const Text(
-                  "ILead Wallet",
+                  "Richway Wallet",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 Text(
@@ -110,9 +112,14 @@ class _WalletPageState extends State<WalletPage> {
                   height: screenHeight * 0.025,
                 ),
                 InkWell(
-                  onTap: () {Navigator.of(context).push(_routeToTLC());},
+                  onTap: () {
+                    Navigator.of(context).push(_routeToTLC());
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.wallet, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.wallet,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "SEND WALLET FUNDS",
                       style: TextStyle(
@@ -125,9 +132,14 @@ class _WalletPageState extends State<WalletPage> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {Navigator.of(context).push(_routeToTU());},
+                  onTap: () {
+                    Navigator.of(context).push(_routeToTU());
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.token, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.token,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "FORWARD TU PINS",
                       style: TextStyle(
@@ -140,9 +152,14 @@ class _WalletPageState extends State<WalletPage> {
                   ),
                 ),
                 InkWell(
-                  onTap: (){Navigator.of(context).push(_routeToFAQS());},
+                  onTap: () {
+                    Navigator.of(context).push(_routeToFAQS());
+                  },
                   child: const ListTile(
-                    leading: Icon(Icons.question_answer, color: Colors.blueAccent,),
+                    leading: Icon(
+                      Icons.question_answer,
+                      color: Colors.blueAccent,
+                    ),
                     title: Text(
                       "FREQUENTLY ASKED QUESTIONS",
                       style: TextStyle(

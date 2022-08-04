@@ -14,7 +14,7 @@ import '../services/route_service.dart';
 RouteManager routeManager = RouteManager();
 
 _launchUrl() async {
-  final Uri _url = Uri.parse("http://dealer.rwayent.com/");
+  final Uri _url = Uri.parse("http://richwayintl.online/");
 
   if (await canLaunchUrl(_url)) {
     await launchUrl(_url);
@@ -38,7 +38,7 @@ class MenuDrawer extends StatelessWidget {
               color: Colors.blue,
             ),
             child: Text(
-              'ILead Loading',
+              'RichWay',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,

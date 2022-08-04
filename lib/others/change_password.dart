@@ -98,7 +98,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 TextField(
                   obscureText: true,
                   keyboardType: const TextInputType.numberWithOptions(),
-                  maxLength: 6,
+                  maxLength: 5,
                   controller: oldPasswordTextController,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
@@ -124,7 +124,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 TextField(
                   obscureText: true,
                   keyboardType: const TextInputType.numberWithOptions(),
-                  maxLength: 6,
+                  maxLength: 5,
                   controller: newPasswordTextController,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,

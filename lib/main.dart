@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('ILead Loading'),
+          title: const Text('Richway'),
           actions: const [SettingsIcon()],
           backgroundColor: Colors.blueAccent,
         ),

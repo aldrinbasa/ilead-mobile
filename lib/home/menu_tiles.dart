@@ -45,7 +45,7 @@ class _TilesState extends State<Tiles> {
           height: 60,
           padding: const EdgeInsets.all(10),
           child: const Text(
-            "Universal and Traditional E-Loading",
+            "All Network Loading",
             textAlign: TextAlign.center,
           ),
         ),
@@ -79,7 +79,7 @@ class _TilesState extends State<Tiles> {
           height: 60,
           padding: const EdgeInsets.all(10),
           child: const Text(
-            "ILead Wallet to Wallet Transfer",
+            "Richway Wallet to Wallet Transfer",
             textAlign: TextAlign.center,
           ),
         ),
@@ -362,7 +362,7 @@ class _TilesState extends State<Tiles> {
   @override
   Widget build(BuildContext context) {
     _launchUrl() async {
-      final Uri _url = Uri.parse("http://dealer.rwayent.com/");
+      final Uri _url = Uri.parse("http://richwayintl.online/");
 
       if (await canLaunchUrl(_url)) {
         await launchUrl(_url);

@@ -5,7 +5,7 @@ import '../services/data_service.dart' as dataService;
 List<String> gatewayList = [];
 List<String> networkList = [];
 List<String> promoList = [];
-String savedGateWay = "09289216384";
+String savedGateWay = "";
 
 void initializeSettings() {
   dataService.getSavedGateWay()!;

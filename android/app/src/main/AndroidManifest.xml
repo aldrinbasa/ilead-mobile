@@ -9,10 +9,14 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto"/>
+        </intent>
     </queries>
    <application
         android:usesCleartextTraffic="true"
-        android:label="ilead_mobile"
+        android:label="Richway Mobile"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
